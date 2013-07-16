@@ -8,54 +8,54 @@ var bar = 4;
 // note that these are cunningly placed with the least
 // useful first
 var pieces = {
-    S: [
-        {x: 1, y: 2},
-        {x: 2, y: 1},
-        {x: 2, y: 2},
-        {x: 3, y: 1}
+    "S": [
+        {"x": 1, "y": 2},
+        {"x": 2, "y": 1},
+        {"x": 2, "y": 2},
+        {"x": 3, "y": 1}
     ],
-    Z: [
-        {x: 1, y: 1},
-        {x: 2, y: 1},
-        {x: 2, y: 2},
-        {x: 3, y: 2}
+    "Z": [
+        {"x": 1, "y": 1},
+        {"x": 2, "y": 1},
+        {"x": 2, "y": 2},
+        {"x": 3, "y": 2}
     ],
-    O: [
-        {x: 1, y: 1},
-        {x: 1, y: 2},
-        {x: 2, y: 1},
-        {x: 2, y: 2}
+    "O": [
+        {"x": 1, "y": 1},
+        {"x": 1, "y": 2},
+        {"x": 2, "y": 1},
+        {"x": 2, "y": 2}
     ],
-    I: [
-        {x: 0, y: 1},
-        {x: 1, y: 1},
-        {x: 2, y: 1},
-        {x: 3, y: 1}
+    "I": [
+        {"x": 0, "y": 1},
+        {"x": 1, "y": 1},
+        {"x": 2, "y": 1},
+        {"x": 3, "y": 1}
     ],
-    L: [
-        {x: 1, y: 1},
-        {x: 1, y: 2},
-        {x: 2, y: 1},
-        {x: 3, y: 1}
+    "L": [
+        {"x": 1, "y": 1},
+        {"x": 1, "y": 2},
+        {"x": 2, "y": 1},
+        {"x": 3, "y": 1}
     ],
-    J: [
-        {x: 1, y: 1},
-        {x: 1, y: 2},
-        {x: 1, y: 3},
-        {x: 2, y: 1}
+    "J": [
+        {"x": 1, "y": 1},
+        {"x": 1, "y": 2},
+        {"x": 1, "y": 3},
+        {"x": 2, "y": 1}
     ],
-    T: [
-        {x: 1, y: 1},
-        {x: 2, y: 1},
-        {x: 2, y: 2},
-        {x: 3, y: 1}
+    "T": [
+        {"x": 1, "y": 1},
+        {"x": 2, "y": 1},
+        {"x": 2, "y": 2},
+        {"x": 3, "y": 1}
     ]
 };
 var transforms = {
-    L: 1,
-    R: 1,
-    D: 1,
-    U: 1
+    "L": 1,
+    "R": 1,
+    "D": 1,
+    "U": 1
 };
 var orientations;
 
@@ -112,10 +112,10 @@ function addPiece(thisWell, thisPiece) {
 // return the best rating found
 function bestWellRating(thisWell, pieceId, thisSearchDepth) {
     var thisPiece = {
-        id: pieceId,
-        x: 0,
-        y: 0,
-        o: 0
+        "id": pieceId,
+        "x": 0,
+        "y": 0,
+        "o": 0
     };
 
     // iterate over all possible resulting positions and get
@@ -160,9 +160,9 @@ function bestWellRating(thisWell, pieceId, thisSearchDepth) {
                     // make newWell from thisWell
                     // no deep copying in javascript!!
                     var newWell = {
-                        content: [],
-                        score: thisWell.score,
-                        highestBlue: thisWell.highestBlue
+                        "content": [],
+                        "score": thisWell.score,
+                        "highestBlue": thisWell.highestBlue
                     };
                     for (var row2 = 0; row2 < wellDepth; row2++) {
                         newWell.content.push(thisWell.content[row2]);
@@ -219,9 +219,9 @@ function clearField() {
     // zero score
     // top blue = wellDepth = 20
     liveWell = {
-        content: [],
-        score: 0,
-        highestBlue: wellDepth
+        "content": [],
+        "score": 0,
+        "highestBlue": wellDepth
     };
     for (var row = 0; row < wellDepth; row++) {
         liveWell.content.push(0);
@@ -285,17 +285,17 @@ function createPlayingField() {
             }
             orientations[i].push(
                     {
-                        xMin: null, // minimum X coordinate of bits in this orientation (0, 1, 2 or 3)
-                        yMin: null, // minimum Y coordinate of bits in this orientation (0, 1, 2 or 3)
-                        xDim: null, // width
-                        yDim: null, // height
-                        rows: rows  // binary representation of the bits on each row
+                        "xMin": null, // minimum X coordinate of bits in this orientation (0, 1, 2 or 3)
+                        "yMin": null, // minimum Y coordinate of bits in this orientation (0, 1, 2 or 3)
+                        "xDim": null, // width
+                        "yDim": null, // height
+                        "rows": rows  // binary representation of the bits on each row
                     }
             );
         }
 
         for (var j in bits) {
-            var bit = {x: bits[j].x, y: bits[j].y};
+            var bit = {"x": bits[j].x, "y": bits[j].y};
             for (var o = 0; o < 4; o++) {
                 orientations[i][o].rows[bit.y] += 1 << bit.x;
 
@@ -319,7 +319,7 @@ function createPlayingField() {
                 }
 
                 // rotate this bit around the middle of the 4x4 grid
-                bit = {x: 3 - bit.y, y: bit.x};
+                bit = {"x": 3 - bit.y, "y": bit.x};
             }
         }
 
@@ -390,52 +390,52 @@ function drawReplay() {
         // there is evidently no function to do this in JavaScript
         if (i % 2 == 1) {
             switch (transformPair) {
-                case LL:
+                case "LL":
                     s = "0";
                     break;
-                case LR:
+                case "LR":
                     s = "1";
                     break;
-                case LD:
+                case "LD":
                     s = "2";
                     break;
-                case LU:
+                case "LU":
                     s = "3";
                     break;
-                case RL:
+                case "RL":
                     s = "4";
                     break;
-                case RR:
+                case "RR":
                     s = "5";
                     break;
-                case RD:
+                case "RD":
                     s = "6";
                     break;
-                case RU:
+                case "RU":
                     s = "7";
                     break;
-                case DL:
+                case "DL":
                     s = "8";
                     break;
-                case DR:
+                case "DR":
                     s = "9";
                     break;
-                case DD:
+                case "DD":
                     s = "A";
                     break;
-                case DU:
+                case "DU":
                     s = "B";
                     break;
-                case UL:
+                case "UL":
                     s = "C";
                     break;
-                case UR:
+                case "UR":
                     s = "D";
                     break;
-                case UD:
+                case "UD":
                     s = "E";
                     break;
-                case UU:
+                case "UU":
                     s = "F";
                     break;
             }
@@ -636,55 +636,55 @@ function startReplay() {
     searchDepth = 0;
     for (var i = 0; i < string.length; i++) {
         switch (string[i]) {
-            case 0:
+            case "0":
                 replayIn.push("L", "L");
                 break;
-            case 1:
+            case "1":
                 replayIn.push("L", "R");
                 break;
-            case 2:
+            case "2":
                 replayIn.push("L", "D");
                 break;
-            case 3:
+            case "3":
                 replayIn.push("L", "U");
                 break;
-            case 4:
+            case "4":
                 replayIn.push("R", "L");
                 break;
-            case 5:
+            case "5":
                 replayIn.push("R", "R");
                 break;
-            case 6:
+            case "6":
                 replayIn.push("R", "D");
                 break;
-            case 7:
+            case "7":
                 replayIn.push("R", "U");
                 break;
-            case 8:
+            case "8":
                 replayIn.push("D", "L");
                 break;
-            case 9:
+            case "9":
                 replayIn.push("D", "R");
                 break;
-            case A:
+            case "A":
                 replayIn.push("D", "D");
                 break;
-            case B:
+            case "B":
                 replayIn.push("D", "U");
                 break;
-            case C:
+            case "C":
                 replayIn.push("U", "L");
                 break;
-            case D:
+            case "D":
                 replayIn.push("U", "R");
                 break;
-            case E:
+            case "E":
                 replayIn.push("U", "D");
                 break;
-            case F:
+            case "F":
                 replayIn.push("U", "U");
                 break;
-            case '#':
+            case "#":
                 searchDepth++;
             default:
                 break;
@@ -711,16 +711,16 @@ function tryTransform(thisWell, thisPiece, transformId) {
 
     // apply transform (very fast now)
     switch (transformId) {
-        case L:
+        case "L":
             x--;
             break;
-        case R:
+        case "R":
             x++;
             break;
-        case D:
+        case "D":
             y++;
             break;
-        case U:
+        case "U":
             o = (o + 1) % 4;
             break;
     }
@@ -745,7 +745,7 @@ function tryTransform(thisWell, thisPiece, transformId) {
         }
     }
 
-    return {id: id, x: x, y: y, o: o};
+    return {"id": id, "x": x, "y": y, "o": o};
 }
 
 
@@ -777,10 +777,10 @@ function worstPiece(thisWell) {
     }
 
     return {
-        id: worstId,
-        x: Math.floor((wellWidth - 4) / 2),
-        y: 0,
-        o: 0
+        "id": worstId,
+        "x": Math.floor((wellWidth - 4) / 2),
+        "y": 0,
+        "o": 0
     };
 }
 
