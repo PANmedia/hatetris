@@ -16,9 +16,20 @@
             </div>
             <div class="hatetris-sidebar">
                 <p><button type="button" onclick="startGame(0);">start new game</button></p>
+                <p>
+                    <select id="difficulty-level">
+                        <option value="childsPlay">Childs play</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                        <option value="extreme">Extreme</option>
+                        <option value="impossibru">Impossibru</option>
+                    </select>
+                </p>
                 <p class="hatetris-hidden"><button type="button" onclick="startReplay();">show a replay</button></p>
                 <p>Score: <span id="score"></span></p>
                 <p>Level: <span id="level"></span></p>
+                <p>Difficulty: <span id="difficulty"></span></p>
                 <p class="hatetris-hidden"><span id="replayOut"></span></p>
             </div>
         </div>

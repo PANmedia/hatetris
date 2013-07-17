@@ -8,7 +8,16 @@ var cellClass = 'hatetris-cell';
 var activeCellClass = cellClass + ' hatetris-cell-active';
 var placedCellClass = cellClass + ' hatetris-cell-placed';
 var pieceClass = 'hatetris-piece';
-var easy = true;
+var difficulty = 10;
+var difficultySettings = {
+    impossibru: 1,
+    extreme: 1.4,
+    hard: 1.9,
+    medium: 2.9,
+    easy: 4.9,
+    childsPlay: 10
+};
+
 var fallSpeedLevels = [1000, 800, 600, 500, 400, 300, 200, 100];
 var fallSpeedLevel = 0;
 var fallSpeed = fallSpeedLevels[fallSpeedLevel];
@@ -274,7 +283,7 @@ function clearField() {
 
     // first piece
     livePiece = worstPiece(liveWell);
-    if (easy) {
+    if (Math.random() * difficulty > 1) {
         livePiece.id = pickRandomProperty(pieces);
     }
     drawPiece(livePiece);
@@ -503,6 +512,22 @@ function drawReplay() {
 function drawScore() {
     document.getElementById("score").innerHTML = liveWell.score;
     document.getElementById("level").innerHTML = Math.floor(liveWell.score / levelLines) + 1;
+
+    var difficultyText;
+    if (difficulty === 1) {
+        difficultyText = 'Impossibru'
+    } else if (difficulty < 1.5) {
+        difficultyText = 'Extreme';
+    } else if (difficulty < 2) {
+        difficultyText = 'Hard';
+    } else if (difficulty < 3) {
+        difficultyText = 'Medium';
+    } else if (difficulty < 5) {
+        difficultyText = 'Easy';
+    } else {
+        difficultyText = 'Childs play';
+    }
+    document.getElementById("difficulty").innerHTML = difficultyText;
 }
 
 // draw a well
@@ -581,7 +606,7 @@ function inputHandler(transformId) {
     // suited to the new world, of course
     if (livePiece == null) {
         livePiece = worstPiece(liveWell);
-        if (easy) {
+        if (Math.random() * difficulty > 1) {
             livePiece.id = pickRandomProperty(pieces);
         }
     }
@@ -656,6 +681,12 @@ function inputReplayStep() {
 
 // clear the field and get ready for a new game
 function startGame(thisSearchDepth) {
+    var selectedDifficulty = document.getElementById('difficulty-level').value;
+    if (selectedDifficulty && difficultySettings[selectedDifficulty]) {
+        difficulty = difficultySettings[selectedDifficulty];
+    } else {
+        difficulty = difficultySettings.impossibru;
+    }
 
     // there may be a replay in progress, this
     // must be killed
