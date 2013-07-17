@@ -91,6 +91,16 @@ function addPiece(thisWell, thisPiece) {
     var xActual = thisPiece.x + orientation.xMin;
     var yActual = thisPiece.y + orientation.yMin;
 
+    if (thisWell.blocks) {
+        for (var row = 0; row < orientation.yDim; row++) {
+            for (var col = 0; col < orientation.xDim; col++) {
+                if (orientation.rows[row] & 1 << col) {
+                    thisWell.blocks[thisPiece.y + orientation.yMin + row][thisPiece.x + orientation.xMin + col] = thisPiece.id;
+                }
+            }
+        }
+    }
+
     // update the "highestBlue" value to account for newly-placed piece
     thisWell.highestBlue = Math.min(thisWell.highestBlue, yActual);
 
@@ -109,6 +119,15 @@ function addPiece(thisWell, thisPiece) {
             // move all lines above this point down
             for (var k = yActual + row; k > 1; k--) {
                 thisWell.content[k] = thisWell.content[k - 1];
+            }
+
+            if (thisWell.blocks) {
+                thisWell.blocks.splice(yActual + row, 1);
+                var blocks = [];
+                for (var col = 0; col < wellBlockWidth; col++) {
+                    blocks.push(cellClass);
+                }
+                thisWell.blocks.unshift(blocks);
             }
 
             // insert a new blank line at the top
@@ -232,12 +251,18 @@ function clearField() {
     // zero score
     // top blue = wellDepth = 20
     liveWell = {
-        "content": [],
-        "score": 0,
-        "highestBlue": wellBlockHeight
+        content: [],
+        score: 0,
+        highestBlue: wellBlockHeight,
+        blocks: []
     };
     for (var row = 0; row < wellBlockHeight; row++) {
         liveWell.content.push(0);
+        var blocks = [];
+        for (var col = 0; col < wellBlockWidth; col++) {
+            blocks.push(cellClass);
+        }
+        liveWell.blocks.push(blocks);
     }
     drawWell(liveWell);
 
@@ -378,14 +403,6 @@ function drawPiece(thisPiece) {
             }
         }
     }
-
-    // Corner class for sprites
-//    var corner = document
-//        .getElementById(tableBodyId)
-//        .rows[thisPiece.y + 1]
-//        .cells[thisPiece.x + 1];
-//    corner.innerHTML = '<img src="images/' + thisPiece.id.toLowerCase() + '.png" class="' + pieceClass + ' ' + pieceClass + '-' + thisPiece.o + '"/>';
-//    corner.className = cellClass + ' ' + pieceClass + ' ' + pieceClass + '-' + thisPiece.o;
 }
 
 // spit out a replay
@@ -492,8 +509,10 @@ function drawWell(thisWell) {
                 .rows[row]
                 .cells[col];
             if (thisWell.content[row] & (1 << col)) {
+                block.className = activeCellClass + ' ' + pieceClass + '-' + liveWell.blocks[row][col];
             } else {
-                block.className = cellClass;
+                block.className = liveWell.blocks[row][col];
+//                block.className = cellClass;
             }
         }
     }
@@ -544,6 +563,8 @@ function inputHandler(transformId) {
     // it is impossible to get bits at row (bar - 2) or higher without getting a bit at row (bar - 1)
     // so there is only one line which we need to check
     if (liveWell.content[bar - 1] > 0) {
+        clearInterval(fallIntervalId);
+        fallIntervalId = null;
 
         // GAME OVER STUFF:
         drawReplay();
@@ -559,7 +580,6 @@ function inputHandler(transformId) {
         if (easy) {
             livePiece.id = pickRandomProperty(pieces);
         }
-        console.log(livePiece);
     }
 
     drawPiece(livePiece);
@@ -850,7 +870,7 @@ function worstPieceRating(thisWell, thisSearchDepth) {
 }
 
 function fall() {
-    inputKey({
-        keyCode: keyDown
-    });
+//    inputKey({
+//        keyCode: keyDown
+//    });
 }
