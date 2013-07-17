@@ -1,17 +1,70 @@
 body {
-  font-family: arial;
+  width: 600px;
+  margin: 10px auto;
 }
 
-p {
-  margin: 10px;
-}
-
-td.cell {
-  width: 25px;
-  height: 25px;
-  color: white;
-  background-color: black;
-  padding: 0;
+.hatetris-wrapper {
   text-align: center;
-  vertical-align: middle;
+  vertical-align: top;
+}
+
+.hatetris-sidebar,
+.hatetris-table-wrapper {
+  float: left;
+}
+
+.hatetris-table-wrapper {
+  height: 480px;
+}
+
+.hatetris-sidebar {
+  height: 480px;
+}
+
+.hatetris-table {
+  border-collapse: collapse;
+  border: 0;
+}
+
+.hatetris-table tr,
+.hatetris-table td,
+.hatetris-table th {
+  padding: 0;
+  margin: 0;
+  vertical-align: top;
+  text-align: left;
+}
+
+.hatetris-cell {
+  width: 24px;
+  height: 24px;
+  background-color: black;
+}
+
+.hatetris-piece-S {
+  background-image: url(images/s.png);
+}
+
+.hatetris-piece-Z {
+  background-image: url(images/z.png);
+}
+
+.hatetris-piece-I {
+  background-image: url(images/i.png);
+}
+
+.hatetris-piece-L {
+  background-image: url(images/l.png);
+}
+
+.hatetris-piece-J {
+  background-image: url(images/j.png);
+}
+
+.hatetris-piece-O {
+  background-image: url(images/o.png);
+}
+
+.hatetris-piece-T {
+  background-image: url(images/t.png);
 }

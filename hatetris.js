@@ -1,8 +1,29 @@
 
 // global well attributes
-var wellWidth = 10; // min=4
-var wellDepth = 20; // min=bar
+var wellBlockWidth = 10; // min=4
+var wellBlockHeight = 20; // min=bar
 var bar = 4;
+var tableBodyId = 'hatetris-table-body';
+var cellClass = 'hatetris-cell';
+var activeCellClass = cellClass + ' hatetris-cell-active';
+var placedCellClass = cellClass + ' hatetris-cell-placed';
+var pieceClass = 'hatetris-piece';
+var easy = true;
+var fallSpeed = 500;
+
+var orientations;
+var liveWell;
+var livePiece;
+var searchDepth; // min = 0, advisable max = 1
+var replayOut;
+var replayIn;
+var replayTimeoutId;
+var fallIntervalId;
+
+var keyLeft = 37;
+var keyUp = 38;
+var keyRight = 39;
+var keyDown = 40;
 
 // basic game config
 // note that these are cunningly placed with the least
@@ -57,14 +78,6 @@ var transforms = {
     "D": 1,
     "U": 1
 };
-var orientations;
-
-var liveWell;
-var livePiece;
-var searchDepth; // min = 0, advisable max = 1
-var replayOut;
-var replayIn;
-var replayTimeoutId;
 
 // lock a piece into the well
 // create lines if necessary
@@ -91,7 +104,7 @@ function addPiece(thisWell, thisPiece) {
         // NOTE: completed lines don't count if you've lost
         if (
                 yActual >= bar
-                && thisWell.content[yActual + row] == (1 << wellWidth) - 1
+                && thisWell.content[yActual + row] == (1 << wellBlockWidth) - 1
                 ) {
             // move all lines above this point down
             for (var k = yActual + row; k > 1; k--) {
@@ -126,7 +139,7 @@ function bestWellRating(thisWell, pieceId, thisSearchDepth) {
     // start pathfinding for it
     // move through empty rows
     while (
-            thisPiece.y + 4 < wellDepth    // piece is above the bottom
+            thisPiece.y + 4 < wellBlockHeight    // piece is above the bottom
             && thisWell.content[thisPiece.y + 4] == 0 // nothing immediately below it
             ) {
         thisPiece = tryTransform(thisWell, thisPiece, "D"); // down
@@ -164,7 +177,7 @@ function bestWellRating(thisWell, pieceId, thisSearchDepth) {
                         "score": thisWell.score,
                         "highestBlue": thisWell.highestBlue
                     };
-                    for (var row2 = 0; row2 < wellDepth; row2++) {
+                    for (var row2 = 0; row2 < wellBlockHeight; row2++) {
                         newWell.content.push(thisWell.content[row2]);
                     }
 
@@ -221,9 +234,9 @@ function clearField() {
     liveWell = {
         "content": [],
         "score": 0,
-        "highestBlue": wellDepth
+        "highestBlue": wellBlockHeight
     };
-    for (var row = 0; row < wellDepth; row++) {
+    for (var row = 0; row < wellBlockHeight; row++) {
         liveWell.content.push(0);
     }
     drawWell(liveWell);
@@ -232,10 +245,24 @@ function clearField() {
 
     // first piece
     livePiece = worstPiece(liveWell);
+    if (easy) {
+        livePiece.id = pickRandomProperty(pieces);
+    }
     drawPiece(livePiece);
 
     // new replay
     replayOut = [];
+}
+
+function pickRandomProperty(obj) {
+    var result;
+    var count = 0;
+    for (var prop in obj) {
+        if (Math.random() < 1/++count) {
+           result = prop;
+        }
+    }
+    return result;
 }
 
 // run once to setup
@@ -244,32 +271,21 @@ function clearField() {
 function createPlayingField() {
 
     // create playing field
-    var tbody = document.getElementById("welltbody");
-    for (var i = 0; i < wellDepth; i++) {
+    var tbody = document.getElementById(tableBodyId);
+    for (var i = 0; i < wellBlockHeight; i++) {
 
         var tr = document.createElement("tr");
         tbody.appendChild(tr);
 
-        for (var j = 0; j < wellWidth; j++) {
+        for (var j = 0; j < wellBlockWidth; j++) {
             var td = document.createElement("td");
-            td.className = "cell";
+            td.className = cellClass;
             if (i == bar) {
                 td.style.borderTop = "1px solid red";
             }
             tr.appendChild(td);
         }
     }
-
-    // put some buttons on the playing field
-    tbody.rows[0].cells[1].innerHTML = "<span onclick=\"inputHandler('U');\">&#x27f3;</span>";
-    tbody.rows[1].cells[0].innerHTML = "<span onclick=\"inputHandler('L');\">&larr;</span>";
-    tbody.rows[1].cells[1].innerHTML = "<span onclick=\"inputHandler('D');\">&darr;</span>";
-    tbody.rows[1].cells[2].innerHTML = "<span onclick=\"inputHandler('R');\">&rarr;</span>";
-
-    tbody.rows[0].cells[1].style.cursor = "pointer";
-    tbody.rows[1].cells[0].style.cursor = "pointer";
-    tbody.rows[1].cells[1].style.cursor = "pointer";
-    tbody.rows[1].cells[2].style.cursor = "pointer";
 
     // also, generate those first piece rotations
     orientations = {};
@@ -354,15 +370,22 @@ function drawPiece(thisPiece) {
     for (var row = 0; row < orientation.yDim; row++) {
         for (var col = 0; col < orientation.xDim; col++) {
             if (orientation.rows[row] & 1 << col) {
-                document
-                        .getElementById("welltbody")
-                        .rows[thisPiece.y + orientation.yMin + row]
-                        .cells[thisPiece.x + orientation.xMin + col]
-                        .style
-                        .backgroundColor = "red";
+                var block = document
+                    .getElementById(tableBodyId)
+                    .rows[thisPiece.y + orientation.yMin + row]
+                    .cells[thisPiece.x + orientation.xMin + col];
+                block.className = activeCellClass + ' ' + pieceClass + '-' + thisPiece.id;
             }
         }
     }
+
+    // Corner class for sprites
+//    var corner = document
+//        .getElementById(tableBodyId)
+//        .rows[thisPiece.y + 1]
+//        .cells[thisPiece.x + 1];
+//    corner.innerHTML = '<img src="images/' + thisPiece.id.toLowerCase() + '.png" class="' + pieceClass + ' ' + pieceClass + '-' + thisPiece.o + '"/>';
+//    corner.className = cellClass + ' ' + pieceClass + ' ' + pieceClass + '-' + thisPiece.o;
 }
 
 // spit out a replay
@@ -462,15 +485,16 @@ function drawScore() {
 
 // draw a well
 function drawWell(thisWell) {
-    for (var col = 0; col < wellWidth; col++) {
-        for (var row = 0; row < wellDepth; row++) {
-            var color = (thisWell.content[row] & (1 << col)) ? "blue" : "black";
-            document
-                    .getElementById("welltbody")
-                    .rows[row]
-                    .cells[col]
-                    .style
-                    .backgroundColor = color;
+    for (var col = 0; col < wellBlockWidth; col++) {
+        for (var row = 0; row < wellBlockHeight; row++) {
+            var block = document
+                .getElementById(tableBodyId)
+                .rows[row]
+                .cells[col];
+            if (thisWell.content[row] & (1 << col)) {
+            } else {
+                block.className = cellClass;
+            }
         }
     }
 }
@@ -481,7 +505,7 @@ function drawWell(thisWell) {
 // y varies between 0 and (wellDepth+2) inclusive (range = wellDepth + 3)
 // o varies between 0 and 3 inclusive (range = 4)
 function hashCode(x, y, o) {
-    return 4 * ((wellDepth + 3) * x + y) + o;
+    return 4 * ((wellBlockHeight + 3) * x + y) + o;
 }
 
 // accepts the input of a transformId and attempts to apply that
@@ -532,6 +556,10 @@ function inputHandler(transformId) {
     // suited to the new world, of course
     if (livePiece == null) {
         livePiece = worstPiece(liveWell);
+        if (easy) {
+            livePiece.id = pickRandomProperty(pieces);
+        }
+        console.log(livePiece);
     }
 
     drawPiece(livePiece);
@@ -548,16 +576,19 @@ function inputKey(event) {
     var transformId = null;
 
     switch (event.keyCode) {
-        case 37:
+        case keyLeft:
             transformId = "L";
             break;
-        case 39:
+        case keyRight:
             transformId = "R";
             break;
-        case 40:
+        case keyDown:
             transformId = "D";
+            // Reset fall timer
+            clearInterval(fallIntervalId);
+            fallIntervalId = setInterval(fall, fallSpeed);
             break;
-        case 38:
+        case keyUp:
             transformId = "U";
             break;
         default:
@@ -615,9 +646,17 @@ function startGame(thisSearchDepth) {
 
     // prepare to take user input
     document.onkeydown = inputKey;
+
+    if (!fallIntervalId) {
+        fallIntervalId = setInterval(fall, fallSpeed);
+    }
 }
 
 function startReplay() {
+    if (fallIntervalId) {
+        clearInterval(fallIntervalId);
+        fallIntervalId = null;
+    }
 
     // there may be a replay in progress, this
     // must be killed
@@ -731,8 +770,8 @@ function tryTransform(thisWell, thisPiece, transformId) {
 
     if (
             xActual < 0                            // make sure not off left side
-            || xActual + orientation.xDim > wellWidth // make sure not off right side
-            || yActual + orientation.yDim > wellDepth // make sure not off bottom
+            || xActual + orientation.xDim > wellBlockWidth // make sure not off right side
+            || yActual + orientation.yDim > wellBlockHeight // make sure not off bottom
             ) {
         return null;
     }
@@ -778,7 +817,7 @@ function worstPiece(thisWell) {
 
     return {
         "id": worstId,
-        "x": Math.floor((wellWidth - 4) / 2),
+        "x": Math.floor((wellBlockWidth - 4) / 2),
         "y": 0,
         "o": 0
     };
@@ -808,4 +847,10 @@ function worstPieceRating(thisWell, thisSearchDepth) {
     }
 
     return worstRating;
+}
+
+function fall() {
+    inputKey({
+        keyCode: keyDown
+    });
 }

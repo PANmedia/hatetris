@@ -6,18 +6,20 @@
         <link rel="stylesheet" type="text/css" href="hatetris.css" />
         <script type="text/javascript" src="hatetris.js"></script>
     </head>
-    <body style="margin: 50px 0 0 50px;" onload="createPlayingField();">
-        <div style="float: left; margin: 0 50px 50px 0;">
-            <table>
-                <tbody id="welltbody">
-                </tbody>
-            </table>
-        </div>
-        <div style="margin: 0 50px 50px 0">
-            <p><button type="button" onclick="startGame(0);">start new game</button></p>
-            <p><button type="button" onclick="startReplay();">show a replay</button></p>
-            <p><span id="score"></span></p>
-            <p><span id="replayOut"></span></p>
+    <body onload="createPlayingField();">
+        <div class="hatetris-wrapper">
+            <div class="hatetris-table-wrapper">
+                <table class="hatetris-table">
+                    <tbody id="hatetris-table-body">
+                    </tbody>
+                </table>
+            </div>
+            <div class="hatetris-sidebar">
+                <p><button type="button" onclick="startGame(0);">start new game</button></p>
+                <p><button type="button" onclick="startReplay();">show a replay</button></p>
+                <p><span id="score"></span></p>
+                <p><span id="replayOut"></span></p>
+            </div>
         </div>
     </body>
 </html>

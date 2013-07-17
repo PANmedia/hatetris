@@ -1,1 +1,1 @@
-scss --style expanded hatetris.scss hatetris.css
+scss --compass --style expanded hatetris.scss hatetris.css
