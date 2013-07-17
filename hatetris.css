@@ -21,7 +21,7 @@ body {
   height: 480px;
 }
 
-.hatetris-preload {
+.hatetris-hidden {
   position: fixed;
   top: 0;
   left: 0;

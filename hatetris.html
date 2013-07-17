@@ -16,12 +16,12 @@
             </div>
             <div class="hatetris-sidebar">
                 <p><button type="button" onclick="startGame(0);">start new game</button></p>
-                <p><button type="button" onclick="startReplay();">show a replay</button></p>
+                <p class="hatetris-hidden"><button type="button" onclick="startReplay();">show a replay</button></p>
                 <p><span id="score"></span></p>
-                <p><span id="replayOut"></span></p>
+                <p class="hatetris-hidden"><span id="replayOut"></span></p>
             </div>
         </div>
-        <div class="hatetris-preload">
+        <div class="hatetris-hidden">
             <img src="images/i.png" />
             <img src="images/j.png" />
             <img src="images/l.png" />
