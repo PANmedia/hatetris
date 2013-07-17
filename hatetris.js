@@ -9,7 +9,10 @@ var activeCellClass = cellClass + ' hatetris-cell-active';
 var placedCellClass = cellClass + ' hatetris-cell-placed';
 var pieceClass = 'hatetris-piece';
 var easy = true;
-var fallSpeed = 500;
+var fallSpeedLevels = [1000, 800, 600, 500, 400, 300, 200, 100];
+var fallSpeedLevel = 0;
+var fallSpeed = fallSpeedLevels[fallSpeedLevel];
+var levelLines = 5;
 
 var orientations;
 var liveWell;
@@ -136,6 +139,7 @@ function addPiece(thisWell, thisPiece) {
 
             thisWell.score++;
             thisWell.highestBlue++;
+            restartFalling(Math.floor(thisWell.score / levelLines));
         }
     }
 }
@@ -498,6 +502,7 @@ function drawReplay() {
 // evil piece generator, outside of normal gameplay
 function drawScore() {
     document.getElementById("score").innerHTML = liveWell.score;
+    document.getElementById("level").innerHTML = Math.floor(liveWell.score / levelLines) + 1;
 }
 
 // draw a well
@@ -563,8 +568,7 @@ function inputHandler(transformId) {
     // it is impossible to get bits at row (bar - 2) or higher without getting a bit at row (bar - 1)
     // so there is only one line which we need to check
     if (liveWell.content[bar - 1] > 0) {
-        clearInterval(fallIntervalId);
-        fallIntervalId = null;
+        stopFalling();
 
         // GAME OVER STUFF:
         drawReplay();
@@ -604,9 +608,7 @@ function inputKey(event) {
             break;
         case keyDown:
             transformId = "D";
-            // Reset fall timer
-            clearInterval(fallIntervalId);
-            fallIntervalId = setInterval(fall, fallSpeed);
+            resetFalling();
             break;
         case keyUp:
             transformId = "U";
@@ -667,16 +669,11 @@ function startGame(thisSearchDepth) {
     // prepare to take user input
     document.onkeydown = inputKey;
 
-    if (!fallIntervalId) {
-        fallIntervalId = setInterval(fall, fallSpeed);
-    }
+    startFalling(0);
 }
 
 function startReplay() {
-    if (fallIntervalId) {
-        clearInterval(fallIntervalId);
-        fallIntervalId = null;
-    }
+    stopFalling();
 
     // there may be a replay in progress, this
     // must be killed
@@ -869,8 +866,30 @@ function worstPieceRating(thisWell, thisSearchDepth) {
     return worstRating;
 }
 
+function stopFalling() {
+    if (fallIntervalId) {
+        clearTimeout(fallIntervalId);
+        fallIntervalId = null;
+    }
+}
+
+function startFalling() {
+    fallIntervalId = setInterval(fall, fallSpeed);
+}
+
+function restartFalling(level) {
+    stopFalling();
+    fallSpeed = fallSpeedLevels[Math.min(level, fallSpeedLevels.length - 1)];
+    startFalling();
+}
+
+function resetFalling() {
+    stopFalling();
+    startFalling();
+}
+
 function fall() {
-//    inputKey({
-//        keyCode: keyDown
-//    });
+    inputKey({
+        keyCode: keyDown
+    });
 }
