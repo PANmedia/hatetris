@@ -11,8 +11,8 @@ var pieceClass = 'hatetris-piece';
 var difficulty = 10;
 var difficultySettings = {
     impossibru: 1,
-    extreme: 1.4,
-    hard: 1.9,
+    extreme: 1.1,
+    hard: 1.5,
     medium: 2.9,
     easy: 4.9,
     childsPlay: 10
@@ -514,18 +514,20 @@ function drawScore() {
     document.getElementById("level").innerHTML = Math.floor(liveWell.score / levelLines) + 1;
 
     var difficultyText;
-    if (difficulty === 1) {
+    if (difficulty == difficultySettings.impossibru) {
         difficultyText = 'Impossibru'
-    } else if (difficulty < 1.5) {
+    } else if (difficulty == difficultySettings.extreme) {
         difficultyText = 'Extreme';
-    } else if (difficulty < 2) {
+    } else if (difficulty == difficultySettings.hard) {
         difficultyText = 'Hard';
-    } else if (difficulty < 3) {
+    } else if (difficulty == difficultySettings.medium) {
         difficultyText = 'Medium';
-    } else if (difficulty < 5) {
+    } else if (difficulty == difficultySettings.easy) {
         difficultyText = 'Easy';
-    } else {
+    } else if (difficulty == difficultySettings.childsPlay) {
         difficultyText = 'Childs play';
+    } else {
+        difficultyText = 'Cheater :P';
     }
     document.getElementById("difficulty").innerHTML = difficultyText;
 }
@@ -700,7 +702,7 @@ function startGame(thisSearchDepth) {
     // prepare to take user input
     document.onkeydown = inputKey;
 
-    startFalling(0);
+    restartFalling(0);
 }
 
 function startReplay() {
