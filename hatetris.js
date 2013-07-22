@@ -42,6 +42,7 @@ var generator = new Random.PRNG();
 var seed;
 var start;
 var drop = new Audio("drop.wav");
+var gameOver = new Audio("gameover.wav");
 //var press = new Audio("press.wav");
 
 // basic game config
@@ -614,6 +615,8 @@ function inputHandler(transformId) {
             return [k];
         }).join(',');
         score.crc = crc32(string);
+        gameOver.play();
+        document.getElementById("hatetris-music").pause();
 
         $('.hatetris-submit').dialog({
             modal: true,
