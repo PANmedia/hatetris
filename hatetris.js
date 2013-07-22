@@ -41,6 +41,8 @@ var keySpace = 32;
 var generator = new Random.PRNG();
 var seed;
 var start;
+var drop = new Audio("drop.wav");
+//var press = new Audio("press.wav");
 
 // basic game config
 // note that these are cunningly placed with the least
@@ -672,6 +674,7 @@ function inputKey(event) {
     event = event || window.event; // add for IE
     var transformId = null;
 
+    var sound = null;
     switch (event.keyCode) {
         case keyLeft:
             transformId = "L";
@@ -684,6 +687,7 @@ function inputKey(event) {
             resetFalling();
             break;
         case keyUp:
+            press
             transformId = "U";
             break;
         case keySpace:
@@ -691,13 +695,16 @@ function inputKey(event) {
             while (tryTransform(liveWell, livePiece, transformId)) {
                 inputHandler(transformId);
             }
-            if (inputHandler(transformId)) {
-                document.onkeydown = inputKey;
-            }
-            return;
+            sound = drop;
+            break;
         default:
             document.onkeydown = inputKey;
             return;
+    }
+
+    if (sound) {
+        sound.currentTime = 0;
+        sound.play();
     }
 
     // make that move
