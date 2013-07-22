@@ -4,10 +4,18 @@
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
         <title>HATETRIS @ Things Of Interest</title>
         <link rel="stylesheet" type="text/css" href="hatetris.css" />
+        <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <script type="text/javascript" src="random.js"></script>
         <script type="text/javascript" src="hatetris.js"></script>
     </head>
     <body onload="createPlayingField();">
         <div class="hatetris-wrapper">
+            <audio id="hatetris-music" controls loop>
+                <source src="tetris.ogg" type="audio/ogg">
+                <source src="tetris.mp3" type="audio/mpeg">
+            </audio>
             <div class="hatetris-table-wrapper">
                 <table class="hatetris-table">
                     <tbody id="hatetris-table-body">
@@ -26,11 +34,23 @@
                         <option value="impossibru">Impossibru</option>
                     </select>
                 </p>
-                <p class="hatetris-hidden"><button type="button" onclick="startReplay();">show a replay</button></p>
+                <p class="hatetris-hidden2"><button type="button" onclick="startReplay();">show a replay</button></p>
                 <p>Score: <span id="score"></span></p>
                 <p>Level: <span id="level"></span></p>
                 <p>Difficulty: <span id="difficulty"></span></p>
                 <p class="hatetris-hidden"><span id="replayOut"></span></p>
+                <div class="hatetris-submit" style="display:none">
+                    <label>Name:</label>
+                    <input type="text" name="name" />
+                    <label>Email Address:</label>
+                    <input type="email" name="email" />
+                </div>
+                <div class="hatetris-scores">
+                    <p>
+                        <img src="https://www.gravatar.com/avatar/21b2334f392f034ca1ebefdac3cc3634?s=32&d=identicon&r=PG" />
+                        J Smith, 13 lines.
+                    </p>
+                </div>
             </div>
         </div>
         <div class="hatetris-hidden">
