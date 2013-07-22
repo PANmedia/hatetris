@@ -690,7 +690,6 @@ function inputKey(event) {
             resetFalling();
             break;
         case keyUp:
-            press
             transformId = "U";
             break;
         case keySpace:
